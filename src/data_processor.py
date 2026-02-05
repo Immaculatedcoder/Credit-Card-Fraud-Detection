@@ -101,4 +101,52 @@ class TransactionDataProcessor:
         logger.info(f" - Duplicate rows: {report['duplicate_rows']}")
 
         return report
+    
+    def clean_data(self) -> pd.DataFrame:
+        """ 
+        Clean the data by handling missing values, duplicates, and invalid entries
+
+        Returns:
+            Cleaned DataFrame
+        """
+        if self.raw_data is None:
+            raise ValueError("No date loaded. Call .load_data() first")
+        
+        df = self.raw_data.copy()
+        initial_rows = len(df)
+
+        df = df.drop_duplicates()
+        duplicates_removed = initial_rows - len(df)
+
+        if duplicates_removed > 0:
+            logger.info(f"Removed {duplicates_removed} duplicate transactions")
+
+        if 'Amount' in df.columns:
+            invalid_amounts = (df['Amount'] < 0).sum()
+            df = df[df['Amount'] >= 0]
+
+            if invalid_amounts > 0:
+                logger.info(f"Removed {invalid_amounts} transactions with negative amounts")
+
+
+        missing_before = df.isna().sum().sum()
+        if missing_before > 0:
+            for col in df.columns:
+                if df[col].isna().any():
+                    if df[col].dtype in ['float64', 'int64']:
+                        df[col].fillna(df[col].median(), inplace=True)
+                        logger.info(f"Filled {df[col].isna().sum()} missing values in {col} with median")
+
+        logger.info(f"Cleaned data: {len(df)} transactions remaining (removed {initial_rows - len(df)} rows)")
+        self.processed_data = df
+        return df
+
+    def get_fraud_analysis(self) -> Dict:
+        """ 
+        Specific analysis focusing on fraudulent transactions.
+
+        Return:
+            Dictinary containing fraud-specific insights
+        """
+
 
