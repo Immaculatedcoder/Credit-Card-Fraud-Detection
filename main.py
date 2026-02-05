@@ -3,7 +3,7 @@
 from src.data_processor import TransactionDataProcessor
 
 def main():
-    processor = TransactionDataProcessor("data/creditcard_20023.csv")
+    processor = TransactionDataProcessor("data/creditcard_2023.csv")
     
     try: 
         df = processor.load_data()
@@ -11,7 +11,7 @@ def main():
     except FileNotFoundError:
         print("Handled in main: file not found!")
     try: 
-        df = processor.vaidate_data()
+        df = processor.validate_data()
     except ValueError:
         print("Handle in main: Call .load_data() first!")
     

@@ -47,7 +47,7 @@ class TransactionDataProcessor:
             logger.error(f"Error loading data: {exactError}")
             raise
     
-    def vaidate_data(self) -> Dict:
+    def validate_data(self) -> Dict:
         """ 
         Validate the loaded data for required columns and data quality.
 
@@ -58,5 +58,47 @@ class TransactionDataProcessor:
         if self.raw_data is None:
             raise ValueError("No data loaded. Call .load_data() first")
         
-        
+        df = self.raw_data
+
+        v_columns = [col for col in df.columns if col[0] == "V"]
+
+        report = {
+            'total_rows': len(df),
+            'total_columns': len(df.columns),
+            'v_features_count': len(v_columns),
+            'missing_columns': [],
+            'missing_values_count': int(df.isna().sum().sum()),
+            'duplicate_rows': int(df.duplicated().sum()),
+            'fraud_count': int((df['Class'] == 1).sum()),
+            'legitimate_count': int((df['Class'] == 0).sum()),
+            'fraud_percentage': float((df['Class'] == 1).mean() * 100),
+            'invalid_amounts': int((df['Amount'] < 0).sum()),
+            'amount_range': {
+                'min': float(df['Amount'].min()),
+                'max': float(df['Amount'].max()),
+                'mean': float(df['Amount'].mean()),
+                'median': float(df['Amount'].median())
+            },
+            'time_range': {
+                'min': float(df['Time'].min()) if 'Time' in df.columns else None,
+                'max': float(df['Time'].max()) if 'Time' in df.columns else None,
+                'duration_hours': float((df['Time'].max() - df['Time'].min())/3600) if 'Time' in df.columns else None,
+            }
+        }
+
+        missing_cols = set(self.REQUIRED_COLUMNS) - set(df.columns)
+        report['missing_columns'] = list(missing_cols)
+
+        if missing_cols:
+            logger.warning(f"Missing required columns: {missing_cols}")
+
+        self.validation_report = report
+        logger.info(f"Validation complete:")
+        logger.info(f" - Total transactions: {report['total_rows']:,}")
+        logger.info(f" - Fraud cases: {report['fraud_count']:,} ({report['fraud_percentage']:.2f}%)")
+        logger.info(f" - Legitimate cases: {report['legitimate_count']:,}")
+        logger.info(f" - Missing values: {report['missing_values_count']}")
+        logger.info(f" - Duplicate rows: {report['duplicate_rows']}")
+
+        return report
 
