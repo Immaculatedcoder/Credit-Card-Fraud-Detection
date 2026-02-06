@@ -149,4 +149,48 @@ class TransactionDataProcessor:
             Dictinary containing fraud-specific insights
         """
 
+        if self.processed_data is None:
+            raise ValueError("No processed data, .load_data() .clean_data() ")
+        
+        df = self.processed_data
+        fraud = df[df['Class'] == 1]
+        legit = df[df['Class'] == 0]
+
+        if len(fraud) == 0:
+            return {'message': 'No fraudulent transactions found in dataset'}
+        
+        analysis = {
+            'fraud_detection_metrics': {
+                'total_fraud_cases': len(fraud),
+                'fraud_percentage': float(len(fraud)/len(df)*100),
+                'average_fraud_amount': float(fraud['Amount'].mean()),
+                'median_fraud_amount': float(fraud['Amount'].median()),
+                'total_fraud_loss': float(fraud['Amount'].sum())
+            },
+            'comparison': {
+                'avg_amount_fraud_vs_legit': {
+                    'fraud': float(fraud['Amount'].mean()),
+                    'legitimate': float(legit['Amount'].mean()),
+                    'ratio': float(fraud['Amount'].mean() / (legit['Amount'].mean() + 1e-6))
+                },
+                'median_amount_fraud_vs_legit': {
+                    'fraud': float(fraud['Amount'].median()),
+                    'legitimate': float(legit['Amount'].median())
+                }
+            }
+        }
+        return analysis
+
+
+
+    def process_pipeline(self) -> pd.DataFrame:
+        """
+        load -> validate -> clean -> 
+        """
+        self.load_data()
+        self.validate_data()
+        self.clean_data()
+        self.get_fraud_analysis()
+        logger.info("Processing pipeline complete")
+        return self.processed_data
 
