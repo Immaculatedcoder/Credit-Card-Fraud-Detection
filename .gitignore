@@ -1,4 +1,11 @@
 creditcard_2023.csv
 processed_creditcard.csv
 reduced_creditcard.csv
+top_1000_anomalies.csv
+transactions_with_scores.csv
+anomaly_scores_distribution.png
+precision_recall_curve.png
+roc_curve.png
+
 .venv
+.env

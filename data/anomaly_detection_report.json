@@ -1,0 +1,127 @@
+{
+  "phase_1_feature_selection": {
+    "algorithm": "Random Forest",
+    "features_selected": 14,
+    "selected_features": [
+      "V14",
+      "V10",
+      "V4",
+      "V12",
+      "V17",
+      "V11",
+      "V16",
+      "V3",
+      "V7",
+      "V2",
+      "V9",
+      "V18",
+      "V21",
+      "V8"
+    ],
+    "rf_performance": {
+      "train_accuracy": 0.9998794094075736,
+      "test_accuracy": 0.9995662088411328
+    }
+  },
+  "phase_2_anomaly_detection": {
+    "algorithm": "Isolation Forest",
+    "training_results": {
+      "training_params": {
+        "contamination": 0.5,
+        "n_estimators": 1000,
+        "max_samples": 80000,
+        "max_features": 1.0
+      },
+      "detection_summary": {
+        "total_transactions": 568630,
+        "anomalies_detected": 284315,
+        "anomaly_rate": 0.5,
+        "anomaly_percentage": 50.0
+      },
+      "score_statistics": {
+        "min": 0.0,
+        "max": 1.0,
+        "mean": 0.08238656308804218,
+        "median": 0.0577608352643903,
+        "std": 0.07539136376523646
+      },
+      "evaluation": {
+        "confusion_matrix": {
+          "true_negatives": 194503,
+          "false_positives": 89812,
+          "false_negatives": 89812,
+          "true_positives": 194503
+        },
+        "metrics": {
+          "accuracy": 0.6841109332958163,
+          "precision": 0.6841109332958163,
+          "recall": 0.6841109332958163,
+          "f1_score": 0.6841109332958163,
+          "roc_auc": 0.7653596254587889,
+          "average_precision": 0.7397803827969288
+        },
+        "fraud_detection": {
+          "frauds_detected": 194503,
+          "frauds_missed": 89812,
+          "total_frauds": 284315,
+          "detection_rate": 0.6841109332958163,
+          "false_alarms": 89812,
+          "false_alarm_rate": 0.31588906670418376
+        },
+        "optimal_threshold": {
+          "value": 0.029944972150201317,
+          "f1_score": 0.7302912732375257,
+          "explanation": "Threshold that maximizes F1 score"
+        }
+      }
+    },
+    "anomaly_analysis": {
+      "summary": {
+        "threshold_percentile": 99,
+        "threshold_value": 0.32516117459228383,
+        "high_risk_count": 5557,
+        "high_risk_percentage": 0.9772611364155954,
+        "normal_risk_count": 563073
+      },
+      "fraud_overlap": {
+        "frauds_in_high_risk": 3371,
+        "total_frauds": 284315,
+        "percentage_frauds_caught": 1.1856567539524823,
+        "precision_high_risk": 60.6622278207666
+      },
+      "fraud_rate_comparison": {
+        "high_risk_fraud_rate": 60.6622278207666,
+        "normal_risk_fraud_rate": 49.89477385703097,
+        "overall_fraud_rate": 50.0
+      },
+      "risk_distribution": {
+        "Low": 546213,
+        "Medium": 21356,
+        "High": 982,
+        "Critical": 79
+      },
+      "fraud_by_risk_category": {
+        "Low": {
+          "count": 546213,
+          "fraud_count": 265769,
+          "fraud_rate": 48.65665958151856
+        },
+        "Medium": {
+          "count": 21356,
+          "fraud_count": 18155,
+          "fraud_rate": 85.0112380595617
+        },
+        "High": {
+          "count": 982,
+          "fraud_count": 391,
+          "fraud_rate": 39.81670061099796
+        },
+        "Critical": {
+          "count": 79,
+          "fraud_count": 0,
+          "fraud_rate": 0.0
+        }
+      }
+    }
+  }
+}
